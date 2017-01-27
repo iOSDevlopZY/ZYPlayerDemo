@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D30a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
+                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="startIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="C5H-Rf-eGr">
+                                <rect key="frame" x="0.0" y="20" width="375" height="443"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="375" id="CeB-1B-2wA"/>
+                                    <constraint firstAttribute="height" constant="443" id="DtT-Ne-mS6"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AVPlayerDemo" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uZx-q7-e2z">
+                                <rect key="frame" x="0.0" y="471" width="375" height="62"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="375" id="3wB-nJ-pUM"/>
+                                    <constraint firstAttribute="height" constant="62" id="Xbl-Vc-blB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="35"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Developed By Yi" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nc3-dp-GOE">
+                                <rect key="frame" x="135" y="541" width="240" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="LXI-O3-Pnb"/>
+                                    <constraint firstAttribute="height" constant="21" id="jYP-eG-33c"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Bold" family="Apple SD Gothic Neo" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="uZx-q7-e2z" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Q0C-24-wjv"/>
+                            <constraint firstItem="C5H-Rf-eGr" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Qsn-3t-whf"/>
+                            <constraint firstAttribute="trailing" secondItem="uZx-q7-e2z" secondAttribute="trailing" id="Xao-XQ-3n6"/>
+                            <constraint firstAttribute="trailing" secondItem="C5H-Rf-eGr" secondAttribute="trailing" id="bUS-In-UQM"/>
+                            <constraint firstItem="uZx-q7-e2z" firstAttribute="top" secondItem="C5H-Rf-eGr" secondAttribute="bottom" constant="8" id="bYb-h4-V3o"/>
+                            <constraint firstItem="Nc3-dp-GOE" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="135" id="bea-B1-FUg"/>
+                            <constraint firstAttribute="trailing" secondItem="Nc3-dp-GOE" secondAttribute="trailing" id="iPf-OV-4YE"/>
+                            <constraint firstItem="Nc3-dp-GOE" firstAttribute="top" secondItem="uZx-q7-e2z" secondAttribute="bottom" constant="8" id="oPv-rW-YhP"/>
+                            <constraint firstItem="C5H-Rf-eGr" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="wg7-Ui-oAE"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="startIcon.png" width="287" height="300"/>
+    </resources>
+</document>
