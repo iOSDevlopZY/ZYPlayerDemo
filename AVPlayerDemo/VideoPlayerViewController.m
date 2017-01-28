@@ -74,6 +74,31 @@
     [super viewDidLoad];
     //初始化视频都是未收藏的
     self.isCollect=false;
+    [self prepareInit];
+    //添加进入前台通知
+    [self addNotification];
+    //创建播放器
+    [self createAvPlayer];
+    //创建播放器头部视图
+    [self createTopView];
+    //创建播放器底部视图
+    [self createBottomView];
+    //获取系统音量
+    [self getSysVolume];
+    //获取系统亮度
+    _systemBrightness = [UIScreen mainScreen].brightness;
+    //隐藏顶部状态栏
+    [self prefersStatusBarHidden];
+    self.view.backgroundColor = [UIColor blackColor];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+#pragma mark - 准备初始化
+- (void)prepareInit
+{
     NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
     NSString *STATS=[defaults objectForKey:[NSString stringWithFormat:@"%@",self.url]];
     if([STATS isEqualToString:@"YES"])
@@ -94,27 +119,22 @@
         
     }
     else{
-    [MBProgressHUD showMessage:@"加载视频中" toView:self.view ];
+        [MBProgressHUD showMessage:@"加载视频中" toView:self.view ];
     }
-    //添加进入前台通知
-    
+}
+#pragma mark -添加通知
+- (void)addNotification
+{
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notice)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(backgroundPause)
                                                  name:UIApplicationWillResignActiveNotification object:nil];
-    //隐藏顶部状态栏
-    [self prefersStatusBarHidden];
-    self.view.backgroundColor = [UIColor blackColor];
-    //创建播放器
-    
-    [self createAvPlayer];
-    //创建播放器头部视图
-    [self createTopView];
-    //创建播放器底部视图
-    [self createBottomView];
-    //获取系统音量
+}
+#pragma mark - 获取系统音量
+- (void)getSysVolume
+{
     MPVolumeView *volumeView = [[MPVolumeView alloc] init];
     _volumeViewSlider = nil;
     for (UIView *view in [volumeView subviews]){
@@ -123,17 +143,7 @@
             break;
         }
     }
-    //获取系统亮度
-    _systemBrightness = [UIScreen mainScreen].brightness;
-    
-
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark - 创建播放器
 - (void)createAvPlayer{
     //设置静音状态也可播放声音
@@ -167,40 +177,58 @@
 }
 #pragma mark - 创建头部View
 - (void)createTopView{
-    CGFloat titleLableWidth = 400;
-     _topView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, TopViewHeight)];
+    
+    _topView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, TopViewHeight)];
     _topView.backgroundColor = [UIColor blackColor];
     _topView.alpha=0.7f;
     //返回按钮
+    [self createBackBtn];
+    //标题按钮
+    [self createTitleLabel];
+    //收藏按钮
+    [self createCollectBtn];
+    //TODO:视频设置
+    [self createSettingBtn];
+    [self.view addSubview:_topView];
+}
+#pragma mark - 创建返回按钮 
+- (void)createBackBtn
+{
     _backBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, TopViewHeight)];
     [_backBtn setImage:[UIImage imageNamed:@"ico_back"] forState:UIControlStateNormal];
     _backBtn.titleLabel.font  = [UIFont systemFontOfSize: 11];
     [_backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_backBtn addTarget:self action:@selector(backClick) forControlEvents:UIControlEventTouchUpInside];
-    
     [_topView addSubview:_backBtn];
-    //标题按钮
+}
+#pragma mark - 创建标题标签
+- (void)createTitleLabel
+{
+    CGFloat titleLableWidth = 400;
     _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.bounds.size.height/2-titleLableWidth/2, 0, titleLableWidth, TopViewHeight)];
     _titleLabel.backgroundColor = [UIColor clearColor];
     [_titleLabel setFont:[UIFont systemFontOfSize:10.0f]];
     _titleLabel.text = [NSString stringWithFormat:@"%@",self.url];
     _titleLabel.textColor = [UIColor whiteColor];
-
+    
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [_topView addSubview:_titleLabel];
-    //收藏按钮
+}
+#pragma mark - 创建收藏按钮
+- (void)createCollectBtn
+{
+    CGFloat titleLableWidth = 400;
     _collectBtn = [[UIButton alloc]initWithFrame:CGRectMake(self.view.bounds.size.height/2+titleLableWidth/2+20, 0, 50, TopViewHeight)];
     if(self.isCollect==NO)
     {
-    [_collectBtn setImage:[UIImage imageNamed:@"love"] forState:UIControlStateNormal];
-    [_collectBtn setImage:[UIImage imageNamed:@"like_yes_3x-1"] forState:UIControlStateSelected];
+        [_collectBtn setImage:[UIImage imageNamed:@"love"] forState:UIControlStateNormal];
+        [_collectBtn setImage:[UIImage imageNamed:@"like_yes_3x-1"] forState:UIControlStateSelected];
     }
     else
     {
         [_collectBtn setImage:[UIImage imageNamed:@"like_yes_3x-1"] forState:UIControlStateNormal];
         [_collectBtn setImage:[UIImage imageNamed:@"love"] forState:UIControlStateSelected];
     }
-    [_collectBtn addTarget:self action:@selector(collect:) forControlEvents:UIControlEventTouchUpInside];
     if([self.url isKindOfClass:[NSNull class]]||self.url==nil)
     {
         
@@ -212,15 +240,18 @@
         self.collectBtn.enabled=false;
         self.collectBtn.userInteractionEnabled=false;
     }
-    [_topView addSubview:_collectBtn];
-//TODO:视频设置
-//    _settingsBtn = [[UIButton alloc]initWithFrame:CGRectMake(mainHeight - 50, 0, 50, TopViewHeight)];
-//    [_settingsBtn setTitle:@"设置" forState:UIControlStateNormal];
-//    [_settingsBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    [_settingsBtn addTarget:self action:@selector(settingsClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [_topView addSubview:_settingsBtn];
+    [_collectBtn addTarget:self action:@selector(collect:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.view addSubview:_topView];
+     [_topView addSubview:_collectBtn];
+}
+#pragma mark - 创建设置按钮
+- (void)createSettingBtn
+{
+    //    _settingsBtn = [[UIButton alloc]initWithFrame:CGRectMake(mainHeight - 50, 0, 50, TopViewHeight)];
+    //    [_settingsBtn setTitle:@"设置" forState:UIControlStateNormal];
+    //    [_settingsBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //    [_settingsBtn addTarget:self action:@selector(settingsClick:) forControlEvents:UIControlEventTouchUpInside];
+    //    [_topView addSubview:_settingsBtn];
 }
 #pragma mark - 收藏按钮点击事件
 - (void)collect:(UIButton*)btn
@@ -268,12 +299,24 @@
 //}
 #pragma mark - 创建底部View
 - (void)createBottomView{
-//    CGFloat titleLableWidth = 400;
-    
     _bottomView = [[UIView alloc]initWithFrame:CGRectMake(0, mainWidth - TopViewHeight, mainHeight, TopViewHeight)];
     _bottomView.backgroundColor = [UIColor blackColor];
     _bottomView.alpha=0.7f;
+    //创建播放按钮
+    [self createPlayBtn];
+    //创建进度条
+    [self createSlider];
+    //创建时间标签
+    [self createTextLabel];
+    //分享按钮
+    [self createShareBtn];
+    [self.view addSubview:_bottomView];
     
+    
+}
+#pragma mark - 创建播放按钮
+- (void)createPlayBtn
+{
     _playBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 7, 40, TopViewHeight-14)];
     [_playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
     _playBtn.imageView.alpha=0.5f;
@@ -282,8 +325,10 @@
     _playBtn.userInteractionEnabled=NO;
     [_playBtn addTarget:self action:@selector(playClick:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_playBtn];
-    
-    //进度条
+}
+#pragma mark - 创建滑块
+- (void)createSlider
+{
     _movieProgressSlider = [[UISlider alloc]initWithFrame:CGRectMake(0, 0, _bottomView.frame.size.width, 10)];
     [_movieProgressSlider setMinimumTrackTintColor:[UIColor whiteColor]];
     
@@ -299,29 +344,29 @@
         
     }
     [_bottomView addSubview:_movieProgressSlider];
-    
+}
+#pragma mark - 创建时间标签
+- (void)createTextLabel
+{
     _textLabel = [[UILabel alloc]initWithFrame:CGRectMake(450, 0, 100, TopViewHeight)];
     
     _textLabel.backgroundColor = [UIColor clearColor];
     _textLabel.textColor = [UIColor whiteColor];
     _textLabel.textAlignment = NSTextAlignmentRight;
     _textLabel.font=[UIFont systemFontOfSize:12.0f];
-    [_bottomView addSubview:_textLabel];
-    
     //在totalTimeLabel上显示总时间
     _textLabel.text = [self convertMovieTimeToText:_totalMovieDuration];
-    
-    //分享按钮
+    [_bottomView addSubview:_textLabel];
+}
+#pragma mark - 创建分享按钮
+- (void)createShareBtn
+{
     _shareBtn=[[UIButton alloc]initWithFrame:CGRectMake(410, 14, 30, TopViewHeight-28)];
     [_shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
     [_shareBtn addTarget:self action:@selector(share) forControlEvents:UIControlEventTouchUpInside];
     _shareBtn.imageView.alpha=0.5f;
     [_shareBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [_bottomView addSubview:_shareBtn];
-    
-    [self.view addSubview:_bottomView];
-    
-    
 }
 #pragma mark - 视频分享
 -(void)share
@@ -564,26 +609,28 @@
                 
             case AVPlayerItemStatusUnknown:
                  [MBProgressHUD hideHUD];
-                [MBProgressHUD showError:@"未知错误发生了" toView:self.view];
-                self.playBtn.userInteractionEnabled=NO;
-                _movieProgressSlider.enabled=NO;
-                _movieProgressSlider.userInteractionEnabled=NO;
+                [self failureOp:@"未知错误发生了"];
                 break;
                 // 这个就是不能播放喽，加载失败了
             case AVPlayerItemStatusFailed:
                  [MBProgressHUD hideHUDForView:self.view];
-                [MBProgressHUD showError:@"加载失败，请退出重试" toView:self.view];
-                self.playBtn.userInteractionEnabled=NO;
-                _movieProgressSlider.enabled=NO;
-                _movieProgressSlider.userInteractionEnabled=NO;
+                [self failureOp:@"加载失败，请退出重试"];
                 // 这时可以通过`self.player.error.description`属性来找出具体的原因
-                NSLog(@"xxxxxxxx%@",self.player.error.description);
+//                NSLog(@"xxxxxxxx%@",self.player.error.description);
                 break;
                 
             default:
                 break;
         }
     }
+}
+#pragma mark - 视频状态失败时操作
+-(void)failureOp:(NSString*)text
+{
+    [MBProgressHUD showError:text toView:self.view];
+    self.playBtn.userInteractionEnabled=NO;
+    _movieProgressSlider.enabled=NO;
+    _movieProgressSlider.userInteractionEnabled=NO;
 }
 #pragma mark - 播放器上下view消失计时器事件
 - (void)autoDismissView:(NSTimer *)timer
