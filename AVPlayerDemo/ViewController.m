@@ -8,11 +8,15 @@
 
 #import "ViewController.h"
 #import "VideoPlayerViewController.h"
+
 @interface ViewController ()
 //网络视频播放按钮
 @property (weak, nonatomic) IBOutlet UIButton *videoPlayBtn;
 //本地视频播放按钮
 @property (weak, nonatomic) IBOutlet UIButton *localVideoPlayBtn;
+//收藏按钮
+@property (weak, nonatomic) IBOutlet UIButton *collectBtn;
+
 //获取视频URL文本输入框
 @property (weak, nonatomic) IBOutlet UITextField *videoURLTextField;
 
@@ -27,6 +31,7 @@
     [self.view setAlpha:0.7f];
     [self setBtnUI:self.videoPlayBtn withTitleString:@"播放网络视频"];
     [self setBtnUI:self.localVideoPlayBtn withTitleString:@"播放本地视频"];
+    [self setBtnUI:self.collectBtn withTitleString:@"我的收藏"];
 }
 
 

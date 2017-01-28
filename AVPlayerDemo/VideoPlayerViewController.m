@@ -20,12 +20,15 @@
 #define mainWidth [UIScreen mainScreen].bounds.size.width
 //主屏幕高度
 #define mainHeight [UIScreen mainScreen].bounds.size.height
+//是否收藏
+@property (nonatomic,assign)BOOL isCollect;
 //顶部视图的控件
 @property (nonatomic,strong)UIView *topView;
 @property (nonatomic,strong)UIButton *backBtn;
 @property (nonatomic,strong)UIButton *fullScreenBtn;
 @property (nonatomic,strong)UILabel *titleLabel;
 @property (nonatomic,strong)UIButton *settingsBtn;
+@property (nonatomic,strong)UIButton *collectBtn;
 //TODO:设置按钮
 @property (nonatomic,strong)UIView *settingsView;
 @property (nonatomic,strong)UIView *rightView;
@@ -69,9 +72,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //初始化视频都是未收藏的
+    self.isCollect=false;
+    NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
+    NSString *STATS=[defaults objectForKey:[NSString stringWithFormat:@"%@",self.url]];
+    if([STATS isEqualToString:@"YES"])
+    {
+        self.isCollect=YES;
+    }
+    else if([STATS isEqualToString:@"NO"])
+    {
+        self.isCollect=NO;
+    }
+    else
+    {
+        self.isCollect=NO;
+    }
     if([self.url isKindOfClass:[NSNull class]]||self.url==nil)
     {
         [MBProgressHUD showError:@"URL不合法" toView:self.view ];
+        
     }
     else{
     [MBProgressHUD showMessage:@"加载视频中" toView:self.view ];
@@ -154,7 +174,6 @@
     //返回按钮
     _backBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, TopViewHeight)];
     [_backBtn setImage:[UIImage imageNamed:@"ico_back"] forState:UIControlStateNormal];
-    [_backBtn setTitle:@"返回" forState:UIControlStateNormal];
     _backBtn.titleLabel.font  = [UIFont systemFontOfSize: 11];
     [_backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_backBtn addTarget:self action:@selector(backClick) forControlEvents:UIControlEventTouchUpInside];
@@ -169,6 +188,31 @@
 
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [_topView addSubview:_titleLabel];
+    //收藏按钮
+    _collectBtn = [[UIButton alloc]initWithFrame:CGRectMake(self.view.bounds.size.height/2+titleLableWidth/2+20, 0, 50, TopViewHeight)];
+    if(self.isCollect==NO)
+    {
+    [_collectBtn setImage:[UIImage imageNamed:@"love"] forState:UIControlStateNormal];
+    [_collectBtn setImage:[UIImage imageNamed:@"like_yes_3x-1"] forState:UIControlStateSelected];
+    }
+    else
+    {
+        [_collectBtn setImage:[UIImage imageNamed:@"like_yes_3x-1"] forState:UIControlStateNormal];
+        [_collectBtn setImage:[UIImage imageNamed:@"love"] forState:UIControlStateSelected];
+    }
+    [_collectBtn addTarget:self action:@selector(collect:) forControlEvents:UIControlEventTouchUpInside];
+    if([self.url isKindOfClass:[NSNull class]]||self.url==nil)
+    {
+        
+        self.collectBtn.enabled=false;
+        self.collectBtn.userInteractionEnabled=false;
+    }
+    if(_totalMovieDuration==0.0f)
+    {
+        self.collectBtn.enabled=false;
+        self.collectBtn.userInteractionEnabled=false;
+    }
+    [_topView addSubview:_collectBtn];
 //TODO:视频设置
 //    _settingsBtn = [[UIButton alloc]initWithFrame:CGRectMake(mainHeight - 50, 0, 50, TopViewHeight)];
 //    [_settingsBtn setTitle:@"设置" forState:UIControlStateNormal];
@@ -177,6 +221,27 @@
 //    [_topView addSubview:_settingsBtn];
     
     [self.view addSubview:_topView];
+}
+#pragma mark - 收藏按钮点击事件
+- (void)collect:(UIButton*)btn
+{
+    btn.selected=!btn.selected;
+    self.isCollect=!self.isCollect;
+    NSString *status=@"";
+    if(self.isCollect==YES)
+    {
+        [MBProgressHUD showSuccess:@"收藏成功" toView:self.view];
+        status=@"YES";
+    }
+    else
+    {
+        [MBProgressHUD showError:@"取消收藏" toView:self.view];
+        status=@"NO";
+    }
+    //存储收藏状态
+    NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
+    [defaults setObject:status forKey:[NSString stringWithFormat:@"%@",self.url]];
+    [defaults synchronize];
 }
 #pragma mark - 返回按钮点击响应事件
 - (void)backClick{
@@ -485,6 +550,8 @@
             case AVPlayerItemStatusReadyToPlay:
                 [MBProgressHUD hideHUDForView:self.view];
                 self.playBtn.userInteractionEnabled=YES;
+                self.collectBtn.userInteractionEnabled=YES;
+                self.collectBtn.enabled=YES;
                 _movieProgressSlider.enabled=YES;
                 self.movieProgressSlider.userInteractionEnabled=YES;
                 // 启动定时器 5秒自动隐藏
