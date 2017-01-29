@@ -379,6 +379,7 @@
     [_shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
     [_shareBtn addTarget:self action:@selector(share) forControlEvents:UIControlEventTouchUpInside];
     _shareBtn.imageView.alpha=0.5f;
+    _shareBtn.userInteractionEnabled=NO;
     [_shareBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [_bottomView addSubview:_shareBtn];
 }
@@ -624,6 +625,7 @@
                 self.collectBtn.userInteractionEnabled=YES;
                 self.widthBtn.userInteractionEnabled=YES;
                 self.collectBtn.enabled=YES;
+                self.shareBtn.userInteractionEnabled=YES;
                 _movieProgressSlider.enabled=YES;
                 self.movieProgressSlider.userInteractionEnabled=YES;
                 // 启动定时器 5秒自动隐藏
@@ -657,6 +659,7 @@
     [MBProgressHUD showError:text toView:self.view];
     self.playBtn.userInteractionEnabled=NO;
      self.widthBtn.userInteractionEnabled=NO;
+     self.shareBtn.userInteractionEnabled=NO;
     _movieProgressSlider.enabled=NO;
     _movieProgressSlider.userInteractionEnabled=NO;
 }
