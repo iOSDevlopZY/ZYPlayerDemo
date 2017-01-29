@@ -29,6 +29,7 @@
 @property (nonatomic,strong)UILabel *titleLabel;
 @property (nonatomic,strong)UIButton *settingsBtn;
 @property (nonatomic,strong)UIButton *collectBtn;
+@property (nonatomic,strong)UIButton *widthBtn;
 //TODO:设置按钮
 @property (nonatomic,strong)UIView *settingsView;
 @property (nonatomic,strong)UIView *rightView;
@@ -36,6 +37,7 @@
 //播放器核心
 @property (nonatomic,strong)AVPlayer *player;
 @property (nonatomic,strong)AVPlayerItem *playerItem;
+@property (nonatomic,strong)AVPlayerLayer *playerLayer;
 //播放器底部的控件
 @property (nonatomic,strong)UIView *bottomView;
 @property (nonatomic,strong)UIButton *playBtn;
@@ -167,13 +169,13 @@
     
     _player = [[AVPlayer alloc]initWithPlayerItem:_playerItem];
     
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
-    playerLayer.frame = playerFrame;
+   _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+   _playerLayer.frame = playerFrame;
     //视频放大方式
-    playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    _playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
     // 监听播放器状态变化
     [self.playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    [self.view.layer addSublayer:playerLayer];
+    [self.view.layer addSublayer:_playerLayer];
 }
 #pragma mark - 创建头部View
 - (void)createTopView{
@@ -210,7 +212,6 @@
     [_titleLabel setFont:[UIFont systemFontOfSize:10.0f]];
     _titleLabel.text = [NSString stringWithFormat:@"%@",self.url];
     _titleLabel.textColor = [UIColor whiteColor];
-    
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [_topView addSubview:_titleLabel];
 }
@@ -306,6 +307,8 @@
     [self createPlayBtn];
     //创建进度条
     [self createSlider];
+    //创建屏幕宽度按钮
+    [self createWidthBtn];
     //创建时间标签
     [self createTextLabel];
     //分享按钮
@@ -345,6 +348,17 @@
     }
     [_bottomView addSubview:_movieProgressSlider];
 }
+#pragma mark - 创建视频宽度按钮
+- (void)createWidthBtn
+{
+    _widthBtn = [[UIButton alloc]initWithFrame:CGRectMake(350, 7, 60, TopViewHeight-14)];
+    [_widthBtn setTitle:@"80%" forState:UIControlStateNormal];
+    [_widthBtn setTitle:@"100%" forState:UIControlStateSelected];
+    _widthBtn.userInteractionEnabled=NO;
+    _widthBtn.selected=NO;
+    [_widthBtn addTarget:self action:@selector(widthClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_bottomView addSubview:_widthBtn];
+}
 #pragma mark - 创建时间标签
 - (void)createTextLabel
 {
@@ -367,6 +381,18 @@
     _shareBtn.imageView.alpha=0.5f;
     [_shareBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [_bottomView addSubview:_shareBtn];
+}
+#pragma mark - 宽度点击按钮
+- (void)widthClick:(UIButton*)btn
+{
+    btn.selected=!btn.selected;
+    if(btn.selected==YES)
+    {
+        _playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    }
+    else{
+        _playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    }
 }
 #pragma mark - 视频分享
 -(void)share
@@ -596,6 +622,7 @@
                 [MBProgressHUD hideHUDForView:self.view];
                 self.playBtn.userInteractionEnabled=YES;
                 self.collectBtn.userInteractionEnabled=YES;
+                self.widthBtn.userInteractionEnabled=YES;
                 self.collectBtn.enabled=YES;
                 _movieProgressSlider.enabled=YES;
                 self.movieProgressSlider.userInteractionEnabled=YES;
@@ -629,6 +656,7 @@
 {
     [MBProgressHUD showError:text toView:self.view];
     self.playBtn.userInteractionEnabled=NO;
+     self.widthBtn.userInteractionEnabled=NO;
     _movieProgressSlider.enabled=NO;
     _movieProgressSlider.userInteractionEnabled=NO;
 }
