@@ -386,6 +386,7 @@
 #pragma mark - 宽度点击按钮
 - (void)widthClick:(UIButton*)btn
 {
+    
     btn.selected=!btn.selected;
     if(btn.selected==YES)
     {

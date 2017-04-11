@@ -452,7 +452,7 @@
 				TargetAttributes = {
 					0C7F1A211E3439B50049EAF6 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = YZX9D3JF2R;
+						DevelopmentTeam = 3JKB9XZMQU;
 						ProvisioningStyle = Automatic;
 					};
 					0C7F1A3A1E3439B60049EAF6 = {
@@ -686,7 +686,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = YZX9D3JF2R;
+				DEVELOPMENT_TEAM = 3JKB9XZMQU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Renren",
@@ -731,7 +731,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = YZX9D3JF2R;
+				DEVELOPMENT_TEAM = 3JKB9XZMQU;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Renren",
